@@ -1,0 +1,27 @@
+{
+  "name": "exokit-avatars",
+  "version": "0.0.1",
+  "description": "Exokit Avatars",
+  "main": "dist/avatars.module.js",
+  "dependencies": {
+    "@pixiv/three-vrm": "^0.6.11",
+    "three": "^0.148.0"
+  },
+  "scripts": {
+    "build": "vite build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msub2/avatars.git"
+  },
+  "authors": "Avaer Kazmer <a@modules.io>, Daniel Adams <msub2official@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/msub2/avatars/issues"
+  },
+  "homepage": "https://github.com/msub2/avatars#readme",
+  "devDependencies": {
+    "vite": "^2.9.5"
+  },
+  "type": "module"
+}
