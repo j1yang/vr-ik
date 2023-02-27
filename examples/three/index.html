@@ -103,7 +103,21 @@
         controls.getInput();
         
         if (controls.input.left.axes.length < 4) return; // Don't try to move if there's no input
-        
+        if(controls.input.left.buttons[5].pressed){
+          controls.input.left.buttons[5].pressed = false;
+          console.log('y clicked')
+          // change avatar
+          if(urlIndex == 0){
+            urlIndex == 1;
+            console.log(1)
+          }
+          if(urlIndex === 1){
+            urlIndex ==0;
+            console.log(0)
+          }
+          
+          //window.location.reload();
+        }
         let x = controls.input.left.axes[2];
         let z = controls.input.left.axes[3];
         
@@ -120,9 +134,13 @@
         
         player.updateMatrixWorld();
       }
+
       
+      //https://models.readyplayer.me/63fce5a096cb00e4ba3875a9.glb
+      const avatarUrls = ['https://models.readyplayer.me/63fce45ff78ee8a6d6907ca5.glb', 'https://models.readyplayer.me/63fcf6283024e430afb12988.glb'];
+      let urlIndex =0;
       const model = await new Promise((res, rej) => {
-        new GLTFLoader().load('../res/avatar_thomas.glb', gltf => {
+        new GLTFLoader().load(avatarUrls[urlIndex], gltf => {
           const meshes = gltf.scene.children[0].children;
           meshes.forEach(o => {
             if (o.type === 'SkinnedMesh') {
