@@ -148,14 +148,16 @@ const localMatrix = new THREE.Matrix4();
       	localMatrix.lookAt(
 	      	zeroVector,
 	      	localVector6.copy(elbowPosition).sub(upperArmPosition),
-	      	upVector
+	      	upVector// upVector
 	      )
       )
         .multiply(this.left ? rightRotation : leftRotation)
         .premultiply(Helpers.getWorldQuaternion(this.arm.upperArm.parent, localQuaternion3).invert());
       Helpers.updateMatrixMatrixWorld(this.arm.upperArm);
 
-			const rotStrength = 0.007;
+
+			// applyQuaternion(localQuaternion3.setFromAxisAngle(new THREE.Vector3(handRotation.x, handRotation.y, handRotation.z), handRotation.w + Math.PI/2.8))
+			const rotStrength = 0.001;
 			const lowerArmX = this.left? rotStrength : -rotStrength;
 			const lowerArmY = 0;
 			const lowerArmZ = 0;
@@ -164,13 +166,19 @@ const localMatrix = new THREE.Matrix4();
         localMatrix.lookAt(
 	      	zeroVector,
 	      	localVector6.copy(handPosition).sub(elbowPosition),
-	      	localVector5.set(lowerArmX, lowerArmY, lowerArmZ).applyQuaternion(handRotation)
+	      	localVector5.set(lowerArmX, lowerArmY, lowerArmZ)
+					.applyQuaternion(localQuaternion3.setFromAxisAngle(new THREE.Vector3(handRotation.x, handRotation.y, handRotation.z), handRotation.w + Math.PI/2.8))
 	      )
       )
         .multiply(this.left ? testRRot : testLRot)
         .premultiply(Helpers.getWorldQuaternion(this.arm.lowerArm.parent, localQuaternion3).invert());
       Helpers.updateMatrixMatrixWorld(this.arm.lowerArm);
-
+					
+			// if(this.left){
+			// 	console.log(handRotation)	
+			// 	console.log("")	
+			// }
+			
       // this.arm.hand.position = handPosition;
       this.arm.hand.quaternion.copy(this.target.quaternion)
         .multiply(this.left ? bankRightRotation : bankLeftRotation)
