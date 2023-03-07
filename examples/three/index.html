@@ -31,7 +31,7 @@
         null, null);
 
       const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.y = 1.7;
+      camera.position.y = 1.7;//1.7
 
       const light = new THREE.DirectionalLight(0xffffff, 0.5);
       scene.add(light);
@@ -135,14 +135,13 @@
         new GLTFLoader().load('https://models.readyplayer.me/63fcf6283024e430afb12988.glb', gltf => {
           const meshes = gltf.scene.children[0].children;
           gltf.scene.traverse(o => {
-            // if (o.type === 'SkinnedMesh') {
-            //   o.material.side = THREE.FrontSide;
-            //   o.frustumCulled = false;
-            // }
-            if(o.name == 'Wolf3D_Body'){
-              console.log(o.material)
-            }else if(o.name == 'Wolf3D_Outfit_Footwear'){
-              //o.visible = false
+            if (o.type === 'SkinnedMesh') {
+              o.material.side = THREE.FrontSide;
+              o.frustumCulled = false;
+            }
+            
+            if(o.name == 'Wolf3D_Outfit_Footwear'){
+              o.visible = false
             }else if(o.name == 'Wolf3D_Outfit_Bottom'){
               o.visible = false
             }
@@ -184,7 +183,10 @@
 
       renderer.setAnimationLoop(() => {
         if (controls.input.active) {
-          console.log(camera.position.y)
+          // renderer.xr.getCamera().position.y =1.6
+          // console.log(renderer.xr.getCamera().position.y =1.7)
+          // console.log(camera.position.y = 2.6)
+          // console.log('')
           //renderer.xr.getCamera().position.y = camera.position.y
           avatar.inputs.hmd.position.copy(renderer.xr.getCamera().position);
           avatar.inputs.hmd.quaternion.copy(renderer.xr.getCamera().quaternion);
