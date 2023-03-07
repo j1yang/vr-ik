@@ -447,6 +447,7 @@ class Avatar {
 	  const Right_ankle = _findFoot(tailBones, false);
 	  const Right_knee = Right_ankle.parent;
 	  const Right_leg = Right_knee.parent;
+    
     const modelBones = {
 	    Hips,
 	    Spine,
@@ -839,6 +840,8 @@ class Avatar {
       rightLowerLeg: this.legsManager.rightLeg.lowerLeg,
       rightFoot: this.legsManager.rightLeg.foot,
 		};
+
+    //console.log(this.outputs)
 		this.modelBoneOutputs = {
 	    Hips: this.outputs.hips,
 	    Spine: this.outputs.spine,

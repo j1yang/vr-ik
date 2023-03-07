@@ -167,7 +167,14 @@ const localMatrix = new THREE.Matrix4();
 	      	zeroVector,
 	      	localVector6.copy(handPosition).sub(elbowPosition),
 	      	localVector5.set(lowerArmX, lowerArmY, lowerArmZ)
-					.applyQuaternion(localQuaternion3.setFromAxisAngle(new THREE.Vector3(handRotation.x, handRotation.y, handRotation.z), handRotation.w + Math.PI/2.8))
+					.applyQuaternion(localQuaternion3.setFromAxisAngle(
+						new THREE.Vector3(
+							handRotation.x, 
+							handRotation.y, 
+							handRotation.z 
+							),
+					 		handRotation.w + Math.PI/2.81)
+						)
 	      )
       )
         .multiply(this.left ? testRRot : testLRot)
