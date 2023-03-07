@@ -88,6 +88,14 @@ class Leg {
   }
 
   Update() {
+    const footPosition = localVector.copy(this.foot.stickTransform.position);
+
+    this.foot.quaternion.copy(footPosition)
+    this.lowerLeg.quaternion.copy(footPosition)
+    //this.upperLeg.quaternion.copy(footPosition)
+    Helpers.updateMatrixMatrixWorld(this.upperLeg);
+    Helpers.updateMatrixMatrixWorld(this.lowerLeg);
+    Helpers.updateMatrixMatrixWorld(this.foot);
 	}
 }
 
@@ -109,26 +117,14 @@ class LegsManager {
   }
 
   Start() {
-  	this.legSeparation = Helpers.getWorldPosition(this.leftLeg.upperLeg, localVector)
-  	  .distanceTo(Helpers.getWorldPosition(this.rightLeg.upperLeg, localVector2));
-  	this.lastHmdPosition.copy(this.poseManager.vrTransforms.head.position);
+  	// this.legSeparation = Helpers.getWorldPosition(this.leftLeg.upperLeg, localVector)
+  	//   .distanceTo(Helpers.getWorldPosition(this.rightLeg.upperLeg, localVector2));
+  	// this.lastHmdPosition.copy(this.poseManager.vrTransforms.head.position);
   	this.leftLeg.Start();
   	this.rightLeg.Start();
   }
 
 	Update() {
-		Helpers.updateMatrixWorld(this.leftLeg.transform);
-		Helpers.updateMatrixWorld(this.leftLeg.upperLeg);
-		Helpers.updateMatrixWorld(this.leftLeg.lowerLeg);
-		Helpers.updateMatrixWorld(this.leftLeg.foot);
-
-    Helpers.updateMatrixWorld(this.rightLeg.transform);
-		Helpers.updateMatrixWorld(this.rightLeg.upperLeg);
-		Helpers.updateMatrixWorld(this.rightLeg.lowerLeg);
-		Helpers.updateMatrixWorld(this.rightLeg.foot);
-
-		
-
 		this.leftLeg.Update();
 		this.rightLeg.Update();
   }

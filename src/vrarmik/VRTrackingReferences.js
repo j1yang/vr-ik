@@ -8,7 +8,7 @@ class VRTrackingReferences {
     /* this.hmd.onchange = () => {
       console.log('change 1', new Error().stack);
     }; */
-    this.head = new THREE.Object3D();
+    this.head = new THREE.Object3D();//new THREE.Object3D()
     this.leftHand = new THREE.Object3D();
     this.leftHand.pointer = 0;
     this.leftHand.grip = 0;

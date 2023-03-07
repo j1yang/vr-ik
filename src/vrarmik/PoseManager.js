@@ -10,9 +10,9 @@ class PoseManager
       // In OpenVR, the 0 position is the ground position and the user is then at (0, playerHeightHmd, 0) if he is in the middle of the room, so I need to correct this for shoulder calculation 
       // this.vrSystemOffsetHeight = 0.0;
 
-			this.referencePlayerHeightHmd = 1.7;
+			this.referencePlayerHeightHmd = 1.79;
 			this.referencePlayerWidthWrist = 1.39;
-			this.playerHeightHmd = 1.70;
+			this.playerHeightHmd = 1.79;//1.79
 			this.playerWidthWrist = 1.39;
 			// this.playerWidthShoulders = 0.31;
       // this.loadPlayerSizeOnAwake = false;
