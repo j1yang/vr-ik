@@ -367,9 +367,9 @@ class VRTrackingReferences {
 class PoseManager {
   constructor(rig) {
     this.vrTransforms = new VRTrackingReferences();
-    this.referencePlayerHeightHmd = 1.7;
+    this.referencePlayerHeightHmd = 1.79;
     this.referencePlayerWidthWrist = 1.39;
-    this.playerHeightHmd = 1.7;
+    this.playerHeightHmd = 1.79;
     this.playerWidthWrist = 1.39;
   }
 }
@@ -385,13 +385,13 @@ class ArmTransforms {
   }
 }
 const localVector$4 = new THREE.Vector3();
-const localVector2$3 = new THREE.Vector3();
+const localVector2$2 = new THREE.Vector3();
 const Helpers = {
   getWorldPosition(o2, v) {
     return v.setFromMatrixPosition(o2.matrixWorld);
   },
   getWorldQuaternion(o2, q2) {
-    o2.matrixWorld.decompose(localVector$4, q2, localVector2$3);
+    o2.matrixWorld.decompose(localVector$4, q2, localVector2$2);
     return q2;
   },
   getWorldScale(o2, v) {
@@ -412,7 +412,7 @@ const rightVector = new THREE.Vector3(1, 0, 0);
 const z180Quaternion$1 = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
 new THREE.Vector3();
 const localVector$3 = new THREE.Vector3();
-const localVector2$2 = new THREE.Vector3();
+const localVector2$1 = new THREE.Vector3();
 new THREE.Vector3();
 new THREE.Vector3();
 const localQuaternion$1 = new THREE.Quaternion();
@@ -455,11 +455,11 @@ class ShoulderPoser {
       const standFactor = Math.min(this.rig.legsManager.leftLeg.standFactor, this.rig.legsManager.rightLeg.standFactor);
       hmdXYRotation.multiply(localQuaternion3$1.setFromAxisAngle(rightVector, (1 - standFactor) * Math.PI / 4));
     }
-    const headPosition = localVector$3.copy(this.vrTransforms.head.position).sub(localVector2$2.copy(this.shoulder.eyes.position).applyQuaternion(hmdRotation));
-    const neckPosition = headPosition.sub(localVector2$2.copy(this.shoulder.head.position).applyQuaternion(hmdRotation));
-    const chestPosition = neckPosition.sub(localVector2$2.copy(this.shoulder.neck.position).applyQuaternion(hmdXYRotation));
-    const spinePosition = chestPosition.sub(localVector2$2.copy(this.shoulder.transform.position).applyQuaternion(hmdXYRotation));
-    const hipsPosition = spinePosition.sub(localVector2$2.copy(this.shoulder.spine.position).applyQuaternion(hmdXYRotation));
+    const headPosition = localVector$3.copy(this.vrTransforms.head.position).sub(localVector2$1.copy(this.shoulder.eyes.position).applyQuaternion(hmdRotation));
+    const neckPosition = headPosition.sub(localVector2$1.copy(this.shoulder.head.position).applyQuaternion(hmdRotation));
+    const chestPosition = neckPosition.sub(localVector2$1.copy(this.shoulder.neck.position).applyQuaternion(hmdXYRotation));
+    const spinePosition = chestPosition.sub(localVector2$1.copy(this.shoulder.transform.position).applyQuaternion(hmdXYRotation));
+    const hipsPosition = spinePosition.sub(localVector2$1.copy(this.shoulder.spine.position).applyQuaternion(hmdXYRotation));
     this.shoulder.hips.position.copy(hipsPosition);
     this.shoulder.hips.quaternion.copy(hmdXYRotation);
     Helpers.updateMatrix(this.shoulder.hips);
@@ -491,7 +491,7 @@ class ShoulderPoser {
     const hipsRotation = localQuaternion$1.copy(this.shoulder.hips.quaternion).multiply(z180Quaternion$1);
     const hipsRotationInverse = localQuaternion2$1.copy(hipsRotation).invert();
     const distanceLeftHand = localVector$3.copy(this.vrTransforms.leftHand.position).sub(this.vrTransforms.head.position).applyQuaternion(hipsRotationInverse);
-    const distanceRightHand = localVector2$2.copy(this.vrTransforms.rightHand.position).sub(this.vrTransforms.head.position).applyQuaternion(hipsRotationInverse);
+    const distanceRightHand = localVector2$1.copy(this.vrTransforms.rightHand.position).sub(this.vrTransforms.head.position).applyQuaternion(hipsRotationInverse);
     distanceLeftHand.y = 0;
     distanceRightHand.y = 0;
     const leftBehind = distanceLeftHand.z > 0;
@@ -520,7 +520,7 @@ new THREE.Vector3();
 const testLRot = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
 const testRRot = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 2);
 const localVector$2 = new THREE.Vector3();
-const localVector2$1 = new THREE.Vector3();
+const localVector2 = new THREE.Vector3();
 const localVector3 = new THREE.Vector3();
 const localVector4 = new THREE.Vector3();
 const localVector5 = new THREE.Vector3();
@@ -542,8 +542,8 @@ class VRArmIK {
     this.armLength = 0;
   }
   Start() {
-    this.upperArmLength = Helpers.getWorldPosition(this.arm.lowerArm, localVector$2).distanceTo(Helpers.getWorldPosition(this.arm.upperArm, localVector2$1));
-    this.lowerArmLength = Helpers.getWorldPosition(this.arm.hand, localVector$2).distanceTo(Helpers.getWorldPosition(this.arm.lowerArm, localVector2$1));
+    this.upperArmLength = Helpers.getWorldPosition(this.arm.lowerArm, localVector$2).distanceTo(Helpers.getWorldPosition(this.arm.upperArm, localVector2));
+    this.lowerArmLength = Helpers.getWorldPosition(this.arm.hand, localVector$2).distanceTo(Helpers.getWorldPosition(this.arm.lowerArm, localVector2));
     this.armLength = this.upperArmLength + this.lowerArmLength;
   }
   Update() {
@@ -551,11 +551,11 @@ class VRArmIK {
     Helpers.updateMatrixWorld(this.arm.upperArm);
     const upperArmPosition = Helpers.getWorldPosition(this.arm.upperArm, localVector$2);
     const handRotation = this.target.quaternion;
-    let handPosition = localVector2$1.copy(this.target.position);
+    let handPosition = localVector2.copy(this.target.position);
     const tYResValue = 0.03;
     if (this.target.position.y > this.shoulder.shoulderPoser.vrTransforms.head.position.y) {
       this.target.position.y = this.shoulder.shoulderPoser.vrTransforms.head.position.y + tYResValue;
-      handPosition = localVector2$1.copy(this.target.position);
+      handPosition = localVector2.copy(this.target.position);
       if (this.target.quaternion.w <= 0.22) {
         console.log("weird!!");
       }
@@ -564,12 +564,12 @@ class VRArmIK {
     const bZResValue = 0.01;
     if (this.target.position.z > this.shoulder.shoulderPoser.vrTransforms.head.position.z) {
       this.target.position.z = this.shoulder.shoulderPoser.vrTransforms.head.position.z + bZResValue;
-      handPosition = localVector2$1.copy(this.target.position);
+      handPosition = localVector2.copy(this.target.position);
     }
     const fZResValue = 0.015;
     if (this.target.position.z < this.shoulder.shoulderPoser.vrTransforms.head.position.z && this.target.position.z > this.shoulder.shoulderPoser.vrTransforms.head.position.z - fZResValue) {
       this.target.position.z = this.shoulder.shoulderPoser.vrTransforms.head.position.z - fZResValue;
-      handPosition = localVector2$1.copy(this.target.position);
+      handPosition = localVector2.copy(this.target.position);
     }
     const shoulderRotation = Helpers.getWorldQuaternion(this.shoulder.transform, localQuaternion);
     const shoulderRotationInverse = localQuaternion2.copy(shoulderRotation).invert();
@@ -596,7 +596,7 @@ class VRArmIK {
     const lowerArmX = this.left ? rotStrength : -rotStrength;
     const lowerArmY = 0;
     const lowerArmZ = 0;
-    this.arm.lowerArm.quaternion.setFromRotationMatrix(localMatrix.lookAt(zeroVector, localVector6.copy(handPosition).sub(elbowPosition), localVector5.set(lowerArmX, lowerArmY, lowerArmZ).applyQuaternion(localQuaternion3.setFromAxisAngle(new THREE.Vector3(handRotation.x, handRotation.y, handRotation.z), handRotation.w + Math.PI / 2.8)))).multiply(this.left ? testRRot : testLRot).premultiply(Helpers.getWorldQuaternion(this.arm.lowerArm.parent, localQuaternion3).invert());
+    this.arm.lowerArm.quaternion.setFromRotationMatrix(localMatrix.lookAt(zeroVector, localVector6.copy(handPosition).sub(elbowPosition), localVector5.set(lowerArmX, lowerArmY, lowerArmZ).applyQuaternion(localQuaternion3.setFromAxisAngle(new THREE.Vector3(handRotation.x, handRotation.y, handRotation.z), handRotation.w + Math.PI / 2.81)))).multiply(this.left ? testRRot : testLRot).premultiply(Helpers.getWorldQuaternion(this.arm.lowerArm.parent, localQuaternion3).invert());
     Helpers.updateMatrixMatrixWorld(this.arm.lowerArm);
     this.arm.hand.quaternion.copy(this.target.quaternion).multiply(this.left ? bankRightRotation : bankLeftRotation).premultiply(Helpers.getWorldQuaternion(this.arm.hand.parent, localQuaternion3).invert());
     Helpers.updateMatrixMatrixWorld(this.arm.hand);
@@ -649,7 +649,7 @@ new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2
 new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2);
 new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 4);
 const localVector$1 = new THREE.Vector3();
-const localVector2 = new THREE.Vector3();
+new THREE.Vector3();
 new THREE.Vector3();
 new THREE.Vector3();
 new THREE.Vector3();
@@ -697,6 +697,12 @@ class Leg {
     Helpers.getWorldPosition(this.upperLeg, this.eyesToUpperLegOffset).sub(Helpers.getWorldPosition(this.legsManager.rig.shoulderTransforms.eyes, localVector$1));
   }
   Update() {
+    const footPosition = localVector$1.copy(this.foot.stickTransform.position);
+    this.foot.quaternion.copy(footPosition);
+    this.lowerLeg.quaternion.copy(footPosition);
+    Helpers.updateMatrixMatrixWorld(this.upperLeg);
+    Helpers.updateMatrixMatrixWorld(this.lowerLeg);
+    Helpers.updateMatrixMatrixWorld(this.foot);
   }
 }
 class LegsManager {
@@ -713,20 +719,10 @@ class LegsManager {
     this.hmdVelocity = new THREE.Vector3();
   }
   Start() {
-    this.legSeparation = Helpers.getWorldPosition(this.leftLeg.upperLeg, localVector$1).distanceTo(Helpers.getWorldPosition(this.rightLeg.upperLeg, localVector2));
-    this.lastHmdPosition.copy(this.poseManager.vrTransforms.head.position);
     this.leftLeg.Start();
     this.rightLeg.Start();
   }
   Update() {
-    Helpers.updateMatrixWorld(this.leftLeg.transform);
-    Helpers.updateMatrixWorld(this.leftLeg.upperLeg);
-    Helpers.updateMatrixWorld(this.leftLeg.lowerLeg);
-    Helpers.updateMatrixWorld(this.leftLeg.foot);
-    Helpers.updateMatrixWorld(this.rightLeg.transform);
-    Helpers.updateMatrixWorld(this.rightLeg.upperLeg);
-    Helpers.updateMatrixWorld(this.rightLeg.lowerLeg);
-    Helpers.updateMatrixWorld(this.rightLeg.foot);
     this.leftLeg.Update();
     this.rightLeg.Update();
   }
