@@ -141,7 +141,7 @@
       let urlIndex = 2;
       const model = await new Promise((res, rej) => {
         new GLTFLoader().load(
-          "https://models.readyplayer.me/63fcf6283024e430afb12988.glb",
+          "https://models.readyplayer.me/640b93850ed60d89a2c97035.glb?morphTargets=eyesClosed,ARKit,Oculus Visemes",
           (gltf) => {
             const meshes = gltf.scene.children[0].children;
             gltf.scene.traverse((o) => {
