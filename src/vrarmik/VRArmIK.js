@@ -24,6 +24,8 @@ const localQuaternion2 = new THREE.Quaternion();
 const localQuaternion3 = new THREE.Quaternion();
 const localEuler = new THREE.Euler();
 
+const handUpRestriction = false;
+
 const localMatrix = new THREE.Matrix4();
 
 	class VRArmIK
@@ -58,17 +60,20 @@ const localMatrix = new THREE.Matrix4();
 			
       let handPosition = localVector2.copy(this.target.position);
 
-			const tYResValue = 0.03;
-			// Hand raising restriction
-			if(this.target.position.y > this.shoulder.shoulderPoser.vrTransforms.head.position.y){
-				this.target.position.y = this.shoulder.shoulderPoser.vrTransforms.head.position.y + tYResValue;//head position + 0.03
-				handPosition = localVector2.copy(this.target.position);
-				if(this.target.quaternion.w <= 0.22){
-					// this.target.quaternion.w = 0.24;
-					console.log('weird!!')
+			if(handUpRestriction){
+				const tYResValue = 0.03;
+				// Hand raising restriction
+				if(this.target.position.y > this.shoulder.shoulderPoser.vrTransforms.head.position.y){
+					this.target.position.y = this.shoulder.shoulderPoser.vrTransforms.head.position.y + tYResValue;//head position + 0.03
+					handPosition = localVector2.copy(this.target.position);
+					if(this.target.quaternion.w <= 0.22){
+						// this.target.quaternion.w = 0.24;
+						console.log('weird!!')
+					}
+					console.log(this.target.quaternion.w)
 				}
-				console.log(this.target.quaternion.w)
 			}
+			
 
 			const bZResValue = 0.01;
 			//Horizontal hand restriction(maximum out).
@@ -160,19 +165,22 @@ const localMatrix = new THREE.Matrix4();
 			const lowerArmX = this.left? rotStrength : -rotStrength;
 			const lowerArmY = 0;
 			const lowerArmZ = 0;
-			let fakeHandRotW = handRotation.w + Math.PI/2.81
+			let fakeHandRRotW = handRotation.w + Math.PI/2.81
+			let fakeHandLRotW = handRotation.w + Math.PI/2.81
+
 			let handRotW =0;
 
 			if(this.left){
 				//ubdy
 
 				//tbdy
-				handRotW = fakeHandRotW < 1.2 ? fakeHandRotW + 2.2 : fakeHandRotW;
+				handRotW = fakeHandRRotW < 1.2 ? fakeHandRRotW + 2.2 : fakeHandRRotW;
 			}else{
 				//ubdy
 
 				//tbdy
-				handRotW = fakeHandRotW;
+				handRotW = fakeHandLRotW < 1.2 ?fakeHandLRotW - 4 : fakeHandLRotW;
+				console.log(handRotW)
 			}
       // this.arm.lowerArm.position = elbowPosition;
       this.arm.lowerArm.quaternion.setFromRotationMatrix(
@@ -204,7 +212,7 @@ const localMatrix = new THREE.Matrix4();
 			if(!this.left){
 				// console.log(this.arm.lowerArm.quaternion)
 				// console.log(this.arm.hand.quaternion)
-				console.log(fakeHandRotW)	
+				console.log(fakeHandLRotW)	
 			}
 		}
 	}
