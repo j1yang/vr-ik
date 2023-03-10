@@ -550,15 +550,6 @@ class VRArmIK {
     const upperArmPosition = Helpers.getWorldPosition(this.arm.upperArm, localVector$2);
     const handRotation = this.target.quaternion;
     let handPosition = localVector2.copy(this.target.position);
-    const tYResValue = 0.03;
-    if (this.target.position.y > this.shoulder.shoulderPoser.vrTransforms.head.position.y) {
-      this.target.position.y = this.shoulder.shoulderPoser.vrTransforms.head.position.y + tYResValue;
-      handPosition = localVector2.copy(this.target.position);
-      if (this.target.quaternion.w <= 0.22) {
-        console.log("weird!!");
-      }
-      console.log(this.target.quaternion.w);
-    }
     const bZResValue = 0.01;
     if (this.target.position.z > this.shoulder.shoulderPoser.vrTransforms.head.position.z) {
       this.target.position.z = this.shoulder.shoulderPoser.vrTransforms.head.position.z + bZResValue;
@@ -594,19 +585,21 @@ class VRArmIK {
     const lowerArmX = this.left ? rotStrength : -rotStrength;
     const lowerArmY = 0;
     const lowerArmZ = 0;
-    let fakeHandRotW = handRotation.w + Math.PI / 2.81;
+    let fakeHandRRotW = handRotation.w + Math.PI / 2.81;
+    let fakeHandLRotW = handRotation.w + Math.PI / 2.81;
     let handRotW = 0;
     if (this.left) {
-      handRotW = fakeHandRotW < 1.2 ? fakeHandRotW + 2.2 : fakeHandRotW;
+      handRotW = fakeHandRRotW < 1.2 ? fakeHandRRotW + 2.2 : fakeHandRRotW;
     } else {
-      handRotW = fakeHandRotW;
+      handRotW = fakeHandLRotW < 1.2 ? fakeHandLRotW - 4 : fakeHandLRotW;
+      console.log(handRotW);
     }
     this.arm.lowerArm.quaternion.setFromRotationMatrix(localMatrix.lookAt(zeroVector, localVector6.copy(handPosition).sub(elbowPosition), localVector5.set(lowerArmX, lowerArmY, lowerArmZ).applyQuaternion(localQuaternion3.setFromAxisAngle(new THREE.Vector3(handRotation.x, handRotation.y, handRotation.z), handRotW)))).multiply(this.left ? rightRotation$1 : leftRotation$1).premultiply(Helpers.getWorldQuaternion(this.arm.lowerArm.parent, localQuaternion3).invert());
     Helpers.updateMatrixMatrixWorld(this.arm.lowerArm);
     this.arm.hand.quaternion.copy(this.target.quaternion).multiply(this.left ? bankRightRotation : bankLeftRotation).premultiply(Helpers.getWorldQuaternion(this.arm.hand.parent, localQuaternion3).invert());
     Helpers.updateMatrixMatrixWorld(this.arm.hand);
     if (!this.left) {
-      console.log(fakeHandRotW);
+      console.log(fakeHandLRotW);
     }
   }
 }
