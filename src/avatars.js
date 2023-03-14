@@ -364,7 +364,7 @@ const _importSkeleton = s => {
 };
 
 class Avatar {
-	constructor(object, options = {}) {
+	constructor(ishalf, object, options = {}) {
     const model = (() => {
       let o = object;
       if (o && !o.isMesh) {

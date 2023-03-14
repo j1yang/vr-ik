@@ -598,9 +598,6 @@ class VRArmIK {
     Helpers.updateMatrixMatrixWorld(this.arm.lowerArm);
     this.arm.hand.quaternion.copy(this.target.quaternion).multiply(this.left ? bankRightRotation : bankLeftRotation).premultiply(Helpers.getWorldQuaternion(this.arm.hand.parent, localQuaternion3).invert());
     Helpers.updateMatrixMatrixWorld(this.arm.hand);
-    if (!this.left) {
-      console.log(fakeHandLRotW);
-    }
   }
 }
 class ShoulderTransforms {
@@ -1077,7 +1074,7 @@ const _importSkeleton = (s) => {
   return new THREE.Skeleton(armature.children);
 };
 class Avatar {
-  constructor(object, options = {}) {
+  constructor(ishalf, object, options = {}) {
     const model = (() => {
       let o2 = object;
       if (o2 && !o2.isMesh) {
