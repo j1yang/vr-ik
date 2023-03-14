@@ -135,14 +135,16 @@
       //https://models.readyplayer.me/63fce5a096cb00e4ba3875a9.glb
       const avatarUrls = [
         "https://models.readyplayer.me/63fce45ff78ee8a6d6907ca5.glb",
-        "https://models.readyplayer.me/63fcf6283024e430afb12988.glb",
+        "https://models.readyplayer.me/64107ba4e8584648bb281f00.glb",
         "../res/avatar_af.glb",
+        "?morphTargets=eyesClosed,ARKit,Oculus Visemes",
       ];
       let urlIndex = 2;
       const model = await new Promise((res, rej) => {
         new GLTFLoader().load(
-          "https://models.readyplayer.me/640b93850ed60d89a2c97035.glb?morphTargets=eyesClosed,ARKit,Oculus Visemes",
+          "https://models.readyplayer.me/63fce45ff78ee8a6d6907ca5.glb?morphTargets=eyesClosed,ARKit,Oculus Visemes",
           (gltf) => {
+            console.log(gltf.scene.children[0].children);
             const meshes = gltf.scene.children[0].children;
             gltf.scene.traverse((o) => {
               if (o.type === "SkinnedMesh") {
@@ -168,7 +170,9 @@
       const microphoneMediaStream = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
-      const avatar = new Avatar(model, {
+
+      const isHalf = false;
+      const avatar = new Avatar(isHalf, model, {
         // model is the gltf object that includes the scene, can use https://github.com/exokitxr/model-loader
         // animate fingers
         fingers: true,

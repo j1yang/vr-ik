@@ -209,11 +209,11 @@ const localMatrix = new THREE.Matrix4();
         .premultiply(Helpers.getWorldQuaternion(this.arm.hand.parent, localQuaternion3).invert());
       Helpers.updateMatrixMatrixWorld(this.arm.hand);
 				
-			if(!this.left){
-				// console.log(this.arm.lowerArm.quaternion)
-				// console.log(this.arm.hand.quaternion)
-				console.log(fakeHandLRotW)	
-			}
+			// if(!this.left){
+			// 	// console.log(this.arm.lowerArm.quaternion)
+			// 	// console.log(this.arm.hand.quaternion)
+			// 	console.log(fakeHandLRotW)	
+			// }
 		}
 	}
 
