@@ -28,6 +28,7 @@ const handUpRestriction = false;
 
 const localMatrix = new THREE.Matrix4();
 
+
 let timer; // Timer variable
 let isAfk =false;
 function startTimer() {
@@ -67,14 +68,32 @@ function stopTimer() {
 			Helpers.updateMatrixWorld(this.arm.upperArm);
 
 			const upperArmPosition = Helpers.getWorldPosition(this.arm.upperArm, localVector);
-      const handRotation = this.target.quaternion;
+      let handRotation = this.target.quaternion;
+			// const afkQ = this.left? 0.05: -0.25;
 			
+			// this.target.quaternion.w = afkQ;
+			// handRotation = localQuaternion.copy(this.arm.lowerArm.quaternion);
 			
-      let handPosition = localVector2.copy(this.target.position);
-			console.log(isAfk)
-			if(this.left){
-				let previousY = this.target.position.y.toFixed(6);
+			const afkX = this.left? 0.2 : -0.2;
+			const afkY = -0.45;
+			const afkZ = -0.15;
+			
+			let handPosition = localVector2.copy(this.target.position);
+			this.target.position.x = this.shoulder.shoulderPoser.vrTransforms.head.position.x + afkX//right more
+			this.target.position.y = this.shoulder.shoulderPoser.vrTransforms.head.position.y + afkY//down more
+			this.target.position.z = this.shoulder.shoulderPoser.vrTransforms.head.position.z + afkZ//front more
 
+			handPosition = localVector2.copy(this.target.position);
+
+			
+			// // 0.8738477944590622,0.47845723383741373,0.06995392297964698,0.05074599656564401
+			// // 0.8081548774831672,0.5361485314660845,-0.0336177158304333,-0.24145454104090108
+			
+			//console.log(isAfk)
+			if(this.left){
+				console.log(this)
+				// console.log(handRotation)
+				let previousY = this.target.position.y.toFixed(6);
 				if(!isAfk){
 					setInterval(() => {
 						if (this.target.position.y.toFixed(6) === previousY) {
@@ -86,8 +105,11 @@ function stopTimer() {
 						} 
 					}, 1000);
 					// console.log(handPosition.y.toFixed(6))
-				}else{
 				}
+			}
+
+			if(isAfk){
+				
 			}
 
 			if(handUpRestriction){

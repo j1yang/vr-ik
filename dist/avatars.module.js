@@ -558,10 +558,17 @@ class VRArmIK {
     Helpers.updateMatrixWorld(this.arm.transform);
     Helpers.updateMatrixWorld(this.arm.upperArm);
     const upperArmPosition = Helpers.getWorldPosition(this.arm.upperArm, localVector$2);
-    const handRotation = this.target.quaternion;
+    let handRotation = this.target.quaternion;
+    const afkX = this.left ? 0.2 : -0.2;
+    const afkY = -0.45;
+    const afkZ = -0.15;
     let handPosition = localVector2.copy(this.target.position);
-    console.log(isAfk);
+    this.target.position.x = this.shoulder.shoulderPoser.vrTransforms.head.position.x + afkX;
+    this.target.position.y = this.shoulder.shoulderPoser.vrTransforms.head.position.y + afkY;
+    this.target.position.z = this.shoulder.shoulderPoser.vrTransforms.head.position.z + afkZ;
+    handPosition = localVector2.copy(this.target.position);
     if (this.left) {
+      console.log(this);
       let previousY = this.target.position.y.toFixed(6);
       if (!isAfk) {
         setInterval(() => {
