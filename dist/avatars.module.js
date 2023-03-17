@@ -528,6 +528,16 @@ const localQuaternion2 = new THREE.Quaternion();
 const localQuaternion3 = new THREE.Quaternion();
 const localEuler = new THREE.Euler();
 const localMatrix = new THREE.Matrix4();
+let timer;
+let isAfk = false;
+function startTimer() {
+  timer = setTimeout(() => {
+    isAfk = true;
+  }, 2e3);
+}
+function stopTimer() {
+  clearTimeout(timer);
+}
 class VRArmIK {
   constructor(arm, shoulder, shoulderPoser, target, left) {
     this.arm = arm;
@@ -550,6 +560,21 @@ class VRArmIK {
     const upperArmPosition = Helpers.getWorldPosition(this.arm.upperArm, localVector$2);
     const handRotation = this.target.quaternion;
     let handPosition = localVector2.copy(this.target.position);
+    console.log(isAfk);
+    if (this.left) {
+      let previousY = this.target.position.y.toFixed(6);
+      if (!isAfk) {
+        setInterval(() => {
+          if (this.target.position.y.toFixed(6) === previousY) {
+            startTimer();
+          } else {
+            stopTimer();
+            isAfk = false;
+            previousY = this.target.position.y.toFixed(6);
+          }
+        }, 1e3);
+      }
+    }
     const bZResValue = 0.01;
     if (this.target.position.z > this.shoulder.shoulderPoser.vrTransforms.head.position.z) {
       this.target.position.z = this.shoulder.shoulderPoser.vrTransforms.head.position.z + bZResValue;
@@ -592,7 +617,6 @@ class VRArmIK {
       handRotW = fakeHandRRotW < 1.2 ? fakeHandRRotW + 2.2 : fakeHandRRotW;
     } else {
       handRotW = fakeHandLRotW < 1.2 ? fakeHandLRotW - 4 : fakeHandLRotW;
-      console.log(handRotW);
     }
     this.arm.lowerArm.quaternion.setFromRotationMatrix(localMatrix.lookAt(zeroVector, localVector6.copy(handPosition).sub(elbowPosition), localVector5.set(lowerArmX, lowerArmY, lowerArmZ).applyQuaternion(localQuaternion3.setFromAxisAngle(new THREE.Vector3(handRotation.x, handRotation.y, handRotation.z), handRotW)))).multiply(this.left ? rightRotation$1 : leftRotation$1).premultiply(Helpers.getWorldQuaternion(this.arm.lowerArm.parent, localQuaternion3).invert());
     Helpers.updateMatrixMatrixWorld(this.arm.lowerArm);

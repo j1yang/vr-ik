@@ -28,6 +28,18 @@ const handUpRestriction = false;
 
 const localMatrix = new THREE.Matrix4();
 
+let timer; // Timer variable
+let isAfk =false;
+function startTimer() {
+  timer = setTimeout(() => {
+		isAfk = true;
+  }, 2000); // 2 second timeout
+}
+function stopTimer() {
+  clearTimeout(timer);
+	
+}
+
 	class VRArmIK
 	{
 		constructor(arm, shoulder, shoulderPoser, target, left) {
@@ -59,6 +71,24 @@ const localMatrix = new THREE.Matrix4();
 			
 			
       let handPosition = localVector2.copy(this.target.position);
+			console.log(isAfk)
+			if(this.left){
+				let previousY = this.target.position.y.toFixed(6);
+
+				if(!isAfk){
+					setInterval(() => {
+						if (this.target.position.y.toFixed(6) === previousY) {
+							startTimer(); // Start the timer if position.y has remained the same
+						} else{
+							stopTimer(); // Stop the timer if position.y has changed
+							isAfk =false;
+							previousY = this.target.position.y.toFixed(6); // Update the previous position.y value
+						} 
+					}, 1000);
+					// console.log(handPosition.y.toFixed(6))
+				}else{
+				}
+			}
 
 			if(handUpRestriction){
 				const tYResValue = 0.03;
@@ -180,7 +210,7 @@ const localMatrix = new THREE.Matrix4();
 
 				//tbdy
 				handRotW = fakeHandLRotW < 1.2 ?fakeHandLRotW - 4 : fakeHandLRotW;
-				console.log(handRotW)
+				//console.log(handRotW)
 			}
       // this.arm.lowerArm.position = elbowPosition;
       this.arm.lowerArm.quaternion.setFromRotationMatrix(
