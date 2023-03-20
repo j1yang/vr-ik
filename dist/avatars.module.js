@@ -528,16 +528,9 @@ const localQuaternion2 = new THREE.Quaternion();
 const localQuaternion3 = new THREE.Quaternion();
 const localEuler = new THREE.Euler();
 const localMatrix = new THREE.Matrix4();
-let timer;
 let isAfk = false;
-function startTimer() {
-  timer = setTimeout(() => {
-    isAfk = true;
-  }, 2e3);
-}
-function stopTimer() {
-  clearTimeout(timer);
-}
+let prevVrAfkY = 0;
+let inAfkTime = 0, outAfkTime = 0, deltaTime = 0;
 class VRArmIK {
   constructor(arm, shoulder, shoulderPoser, target, left) {
     this.arm = arm;
@@ -559,28 +552,47 @@ class VRArmIK {
     Helpers.updateMatrixWorld(this.arm.upperArm);
     const upperArmPosition = Helpers.getWorldPosition(this.arm.upperArm, localVector$2);
     let handRotation = this.target.quaternion;
+    let handPosition = localVector2.copy(this.target.position);
+    let leaveAfkHandPos = localVector2.copy(this.target.position);
     const afkX = this.left ? 0.2 : -0.2;
     const afkY = -0.45;
     const afkZ = -0.15;
-    let handPosition = localVector2.copy(this.target.position);
-    this.target.position.x = this.shoulder.shoulderPoser.vrTransforms.head.position.x + afkX;
-    this.target.position.y = this.shoulder.shoulderPoser.vrTransforms.head.position.y + afkY;
-    this.target.position.z = this.shoulder.shoulderPoser.vrTransforms.head.position.z + afkZ;
-    handPosition = localVector2.copy(this.target.position);
-    if (this.left) {
-      console.log(this);
-      let previousY = this.target.position.y.toFixed(6);
-      if (!isAfk) {
-        setInterval(() => {
-          if (this.target.position.y.toFixed(6) === previousY) {
-            startTimer();
+    let previousY = this.target.position.y.toFixed(5);
+    if (inAfkTime === 4) {
+      isAfk = true;
+      inAfkTime = 0;
+    }
+    if (outAfkTime === 3) {
+      isAfk = false;
+      inAfkTime = 0;
+      outAfkTime = 0;
+    }
+    deltaTime += 1;
+    if (!isAfk) {
+      if (deltaTime % 300 === 0) {
+        setTimeout(() => {
+          if (this.target.position.y.toFixed(5) === previousY) {
+            inAfkTime += 1;
+            prevVrAfkY = leaveAfkHandPos.y.toFixed(5);
           } else {
-            stopTimer();
+            inAfkTime = 0;
             isAfk = false;
-            previousY = this.target.position.y.toFixed(6);
+            previousY = this.target.position.y.toFixed(5);
           }
+          console.log("In AFK Time", inAfkTime);
         }, 1e3);
       }
+    } else {
+      if (deltaTime % 300 === 0) {
+        if (leaveAfkHandPos.y.toFixed(5) != prevVrAfkY) {
+          outAfkTime += 1;
+          console.log("Out AFK Time", outAfkTime);
+        }
+      }
+      this.target.position.y = this.shoulder.shoulderPoser.vrTransforms.head.position.y + afkY;
+      this.target.position.x = this.shoulder.shoulderPoser.vrTransforms.head.position.x + afkX;
+      this.target.position.z = this.shoulder.shoulderPoser.vrTransforms.head.position.z + afkZ;
+      handPosition = localVector2.copy(this.target.position);
     }
     const bZResValue = 0.01;
     if (this.target.position.z > this.shoulder.shoulderPoser.vrTransforms.head.position.z) {

@@ -34,24 +34,6 @@ let isAfk =false;
 let prevAfkY = 0;
 let prevVrAfkY = 0;
 
-function startAFKONTimer() {
-  afkOnTimer = setTimeout(() => {
-		isAfk = true;
-  }, 4000); // 4 second timeout
-}
-function stopAFKONTimer() {
-  clearTimeout(afkOnTimer);
-}
-
-function startAFKOFFTimer() {
-  afkOffTimer = setTimeout(() => {
-		isAfk = false;
-  }, 2000); // 2 second timeout
-}
-function stopAFKOFFTimer() {
-  clearTimeout(afkOffTimer);
-}
-
 let inAfkTime = 0, outAfkTime= 0, deltaTime = 0;
 
 	class VRArmIK
@@ -95,30 +77,19 @@ let inAfkTime = 0, outAfkTime= 0, deltaTime = 0;
 			const afkY = -0.45;
 			const afkZ = -0.15;
 			
-			// // 0.8738477944590622,0.47845723383741373,0.06995392297964698,0.05074599656564401
-			// // 0.8081548774831672,0.5361485314660845,-0.0336177158304333,-0.24145454104090108
-			
 
-
-
-			// console.log(isAfk)
 			let previousY = this.target.position.y.toFixed(5);
-			//let prevAfkY = (this.shoulder.shoulderPoser.vrTransforms.head.position.y + afkY).toFixed(5)
 
-
-			if(!this.left){
-				// console.log('prev Y', previousY)
-				// console.log('curr Y', this.target.position.y.toFixed(5))
-				// console.log(' ')
-			}
-
-			if(inAfkTime === 2){
+			//Enter AFK mode
+			if(inAfkTime === 4){
 				isAfk = true;
 				inAfkTime = 0;
-				prevAfkY = (this.shoulder.shoulderPoser.vrTransforms.head.position.y + afkY).toFixed(5);
+				//user vr controller location when entering afk mode (debug)
+				//prevAfkY = (this.shoulder.shoulderPoser.vrTransforms.head.position.y + afkY).toFixed(5);
 			}
 
-			if(outAfkTime === 4){
+			//Exit AFK Mode
+			if(outAfkTime === 3){
 				isAfk = false;
 				inAfkTime = 0;
 				outAfkTime = 0;
@@ -128,13 +99,11 @@ let inAfkTime = 0, outAfkTime= 0, deltaTime = 0;
 
 			if(!isAfk){
 				if(deltaTime % 300 === 0){
-					console.log('Not AFK')
-					//console.log('curr Y', this.target.position.y.toFixed(5))
+					//console.log('Not AFK')
 					setTimeout(()=>{
 						if (this.target.position.y.toFixed(5) === previousY) {
-							
 							inAfkTime += 1;
-							//console.log('curr Y', this.target.position.y.toFixed(5))
+							//user vr controller location when entering afk mode
 							prevVrAfkY = leaveAfkHandPos.y.toFixed(5);
 							//console.log('PrevCurr Same')
 						} else{
@@ -148,21 +117,10 @@ let inAfkTime = 0, outAfkTime= 0, deltaTime = 0;
 					
 				}
 			}else{
-				// if(!this.left){
-				// 	console.log('avatar afk pos Y', prevAfkY)
-				// 	console.log('vr device new hand pos',(leaveAfkHandPos.y).toFixed(5))
-				// 	console.log('where vr afked', prevVrAfkY)
-				// }
-				if(deltaTime % 100 === 0){
+				if(deltaTime % 300 === 0){
 					if ((leaveAfkHandPos.y).toFixed(5) != prevVrAfkY) {
 						outAfkTime += 1;
-						if(!this.left){
-							// console.log('vr device new hand pos',(leaveAfkHandPos.y).toFixed(5))
-							// console.log('where vr afked', prevVrAfkY)
-							// console.log('PrevCurr Diff')
-							// console.log('')
-							console.log('Out AFK Time', outAfkTime)
-						}
+						console.log('Out AFK Time', outAfkTime)
 					} 
 				}
 
@@ -171,34 +129,8 @@ let inAfkTime = 0, outAfkTime= 0, deltaTime = 0;
 				this.target.position.x = this.shoulder.shoulderPoser.vrTransforms.head.position.x + afkX//right more
 				this.target.position.z = this.shoulder.shoulderPoser.vrTransforms.head.position.z + afkZ//front more
 				handPosition = localVector2.copy(this.target.position);
-
-				// if(!this.left){
-				// 	console.log('updated Y', (this.target.position.y).toFixed(5))
-				// 	console.log('')
-				// }
-				
-				
-
 			}
-				// if(!isAfk){
-				// 	inAfkTime+=1
-				// 	console.log(afkTime)
-				// 	// setInterval(() => {
-				// 	// 	if (this.target.position.y.toFixed(5) === previousY) {
-							
-				// 	// 		// startAFKONTimer(); // Start the timer if position.y has remained the same
-				// 	// 		// stopAFKOFFTimer();
-				// 	// 	} else{
-				// 	// 		// stopAFKONTimer(); // Stop the timer if position.y has changed
-				// 	// 		// startAFKOFFTimer();
-				// 	// 		previousY = this.target.position.y.toFixed(5); // Update the previous position.y value
-				// 	// 	} 
-				// 	// }, 1000);
-				// 	// console.log(handPosition.y.toFixed(6))
-				// }else{
-				// 	// startAFKOFFTimer();
-				// }
-
+				
 
 			if(handUpRestriction){
 				const tYResValue = 0.03;
