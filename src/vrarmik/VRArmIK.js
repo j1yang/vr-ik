@@ -28,8 +28,7 @@ const handUpRestriction = false;
 
 const localMatrix = new THREE.Matrix4();
 
-
-let afkOnTimer, afkOffTimer; // Timer variable
+//afk variables
 let isAfk =false;
 let prevAfkY = 0;
 let prevVrAfkY = 0;
@@ -66,6 +65,9 @@ let inAfkTime = 0, outAfkTime= 0, deltaTime = 0;
       let handRotation = this.target.quaternion;
 
 			let handPosition = localVector2.copy(this.target.position);
+
+
+			//reference of controller's position when entering afk
 			let leaveAfkHandPos = localVector2.copy(this.target.position);
 
 			// const afkQ = this.left? 0.05: -0.25;
@@ -73,11 +75,12 @@ let inAfkTime = 0, outAfkTime= 0, deltaTime = 0;
 			// this.target.quaternion.w = afkQ;
 			// handRotation = localQuaternion.copy(this.arm.lowerArm.quaternion);
 			
+			//set afk position from head xyz
 			const afkX = this.left? 0.2 : -0.2;
 			const afkY = -0.45;
 			const afkZ = -0.15;
 			
-
+			//previous controller's Y coord
 			let previousY = this.target.position.y.toFixed(5);
 
 			//Enter AFK mode
@@ -124,6 +127,7 @@ let inAfkTime = 0, outAfkTime= 0, deltaTime = 0;
 					} 
 				}
 
+				//static afk position and update
 				this.target.position.y = this.shoulder.shoulderPoser.vrTransforms.head.position.y + afkY//down more
 
 				this.target.position.x = this.shoulder.shoulderPoser.vrTransforms.head.position.x + afkX//right more
@@ -132,6 +136,7 @@ let inAfkTime = 0, outAfkTime= 0, deltaTime = 0;
 			}
 				
 
+			//restriction
 			if(handUpRestriction){
 				const tYResValue = 0.03;
 				// Hand raising restriction
