@@ -31,6 +31,9 @@ const localMatrix = new THREE.Matrix4();
 
 let afkOnTimer, afkOffTimer; // Timer variable
 let isAfk =false;
+let prevAfkY = 0;
+let prevVrAfkY = 0;
+
 function startAFKONTimer() {
   afkOnTimer = setTimeout(() => {
 		isAfk = true;
@@ -49,7 +52,7 @@ function stopAFKOFFTimer() {
   clearTimeout(afkOffTimer);
 }
 
-let afkTime = 0, deltaTime = 0;
+let inAfkTime = 0, outAfkTime= 0, deltaTime = 0;
 
 	class VRArmIK
 	{
@@ -81,7 +84,7 @@ let afkTime = 0, deltaTime = 0;
       let handRotation = this.target.quaternion;
 
 			let handPosition = localVector2.copy(this.target.position);
-
+			let leaveAfkHandPos = localVector2.copy(this.target.position);
 
 			// const afkQ = this.left? 0.05: -0.25;
 			
@@ -100,42 +103,85 @@ let afkTime = 0, deltaTime = 0;
 
 			// console.log(isAfk)
 			let previousY = this.target.position.y.toFixed(5);
-			
+			//let prevAfkY = (this.shoulder.shoulderPoser.vrTransforms.head.position.y + afkY).toFixed(5)
+
 
 			if(!this.left){
-				//console.log('prev Y', previousY)
+				// console.log('prev Y', previousY)
+				// console.log('curr Y', this.target.position.y.toFixed(5))
+				// console.log(' ')
 			}
-			
-			if(afkTime === 4){
+
+			if(inAfkTime === 2){
 				isAfk = true;
+				inAfkTime = 0;
+				prevAfkY = (this.shoulder.shoulderPoser.vrTransforms.head.position.y + afkY).toFixed(5);
 			}
+
+			if(outAfkTime === 4){
+				isAfk = false;
+				inAfkTime = 0;
+				outAfkTime = 0;
+			}
+
 			deltaTime+=1;
 
 			if(!isAfk){
 				if(deltaTime % 300 === 0){
+					console.log('Not AFK')
 					//console.log('curr Y', this.target.position.y.toFixed(5))
 					setTimeout(()=>{
 						if (this.target.position.y.toFixed(5) === previousY) {
-							afkTime += 1;
-							console.log('PrevCurr Same')
+							
+							inAfkTime += 1;
+							//console.log('curr Y', this.target.position.y.toFixed(5))
+							prevVrAfkY = leaveAfkHandPos.y.toFixed(5);
+							//console.log('PrevCurr Same')
 						} else{
-							afkTime = 0;
+							inAfkTime = 0;
 							isAfk = false;	
 							previousY = this.target.position.y.toFixed(5); // Update the previous position.y value
-							console.log('PrevCurr Different')
+							//console.log('PrevCurr Different')
 						} 
-						console.log('AFK Time', afkTime)
+						console.log('In AFK Time', inAfkTime)
 					},1000)
 					
 				}
 			}else{
-				
-				if(deltaTime % 500 === 0){
-					console.log('AFK Now')
+				// if(!this.left){
+				// 	console.log('avatar afk pos Y', prevAfkY)
+				// 	console.log('vr device new hand pos',(leaveAfkHandPos.y).toFixed(5))
+				// 	console.log('where vr afked', prevVrAfkY)
+				// }
+				if(deltaTime % 100 === 0){
+					if ((leaveAfkHandPos.y).toFixed(5) != prevVrAfkY) {
+						outAfkTime += 1;
+						if(!this.left){
+							// console.log('vr device new hand pos',(leaveAfkHandPos.y).toFixed(5))
+							// console.log('where vr afked', prevVrAfkY)
+							// console.log('PrevCurr Diff')
+							// console.log('')
+							console.log('Out AFK Time', outAfkTime)
+						}
+					} 
 				}
+
+				this.target.position.y = this.shoulder.shoulderPoser.vrTransforms.head.position.y + afkY//down more
+
+				this.target.position.x = this.shoulder.shoulderPoser.vrTransforms.head.position.x + afkX//right more
+				this.target.position.z = this.shoulder.shoulderPoser.vrTransforms.head.position.z + afkZ//front more
+				handPosition = localVector2.copy(this.target.position);
+
+				// if(!this.left){
+				// 	console.log('updated Y', (this.target.position.y).toFixed(5))
+				// 	console.log('')
+				// }
+				
+				
+
 			}
 				// if(!isAfk){
-				// 	afkTime+=1
+				// 	inAfkTime+=1
 				// 	console.log(afkTime)
 				// 	// setInterval(() => {
 				// 	// 	if (this.target.position.y.toFixed(5) === previousY) {
@@ -152,13 +198,7 @@ let afkTime = 0, deltaTime = 0;
 				// }else{
 				// 	// startAFKOFFTimer();
 				// }
-			if(isAfk){
-				this.target.position.x = this.shoulder.shoulderPoser.vrTransforms.head.position.x + afkX//right more
-				this.target.position.y = this.shoulder.shoulderPoser.vrTransforms.head.position.y + afkY//down more
-				this.target.position.z = this.shoulder.shoulderPoser.vrTransforms.head.position.z + afkZ//front more
 
-				handPosition = localVector2.copy(this.target.position);
-			}
 
 			if(handUpRestriction){
 				const tYResValue = 0.03;
