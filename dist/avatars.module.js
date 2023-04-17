@@ -447,7 +447,6 @@ class ShoulderPoser {
     if (hmdRotation.y < 0.72 && headBodySync === false) {
       hmdQuaternion = hmdRotation;
     }
-    console.log(headBodySync);
     const hmdEuler = localEuler$1.setFromQuaternion(hmdQuaternion, "YXZ");
     hmdEuler.x = 0;
     hmdEuler.z = 0;
@@ -537,7 +536,7 @@ let isAfk = false;
 let prevVrAfkY = 0;
 let inAfkTime = 0, outAfkTime = 0, deltaTime = 0;
 class VRArmIK {
-  constructor(arm, shoulder, shoulderPoser, target, left) {
+  constructor(arm, shoulder, shoulderPoser, target, left, headQuaternion) {
     this.arm = arm;
     this.shoulder = shoulder;
     this.shoulderPoser = shoulderPoser;
@@ -546,6 +545,7 @@ class VRArmIK {
     this.upperArmLength = 0;
     this.lowerArmLength = 0;
     this.armLength = 0;
+    this.headQuaternion = headQuaternion;
   }
   Start() {
     this.upperArmLength = Helpers.getWorldPosition(this.arm.lowerArm, localVector$2).distanceTo(Helpers.getWorldPosition(this.arm.upperArm, localVector2));
@@ -559,9 +559,9 @@ class VRArmIK {
     let handRotation = this.target.quaternion;
     let handPosition = localVector2.copy(this.target.position);
     let leaveAfkHandPos = localVector2.copy(this.target.position);
-    const afkX = this.left ? 0.2 : -0.2;
+    const afkX = this.left ? this.headQuaternion.y > 0.72 ? -0.2 : 0.2 : this.headQuaternion.y > 0.72 ? 0.2 : -0.2;
     const afkY = -0.45;
-    const afkZ = -0.15;
+    const afkZ = this.headQuaternion.y > 0.72 ? 0.15 : -0.15;
     let previousY = this.target.position.y.toFixed(5);
     if (inAfkTime === 4) {
       isAfk = true;
@@ -675,8 +675,9 @@ class ShoulderTransforms {
     this.lastStandTimestamp = now;
     this.lastProneTimestamp = now;
     this.shoulderPoser = new ShoulderPoser(rig, this);
-    this.leftArmIk = new VRArmIK(this.leftArm, this, this.shoulderPoser, this.shoulderPoser.vrTransforms.leftHand, true);
-    this.rightArmIk = new VRArmIK(this.rightArm, this, this.shoulderPoser, this.shoulderPoser.vrTransforms.rightHand, false);
+    this.headQuaternion = rig.poseManager.vrTransforms.head.quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI));
+    this.leftArmIk = new VRArmIK(this.leftArm, this, this.shoulderPoser, this.shoulderPoser.vrTransforms.leftHand, true, this.headQuaternion);
+    this.rightArmIk = new VRArmIK(this.rightArm, this, this.shoulderPoser, this.shoulderPoser.vrTransforms.rightHand, false, this.headQuaternion);
   }
   Start() {
     this.leftArmIk.Start();
