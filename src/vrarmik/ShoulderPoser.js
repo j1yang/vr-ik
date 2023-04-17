@@ -58,7 +58,6 @@ class ShoulderPoser {
     if (hmdRotation.y < 0.72 && headBodySync === false) {
       hmdQuaternion = hmdRotation;
     }
-    console.log(headBodySync);
     const hmdEuler = localEuler.setFromQuaternion(hmdQuaternion, "YXZ");
     hmdEuler.x = 0;
     hmdEuler.z = 0;
