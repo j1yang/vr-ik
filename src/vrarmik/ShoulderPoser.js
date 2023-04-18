@@ -55,6 +55,8 @@ class ShoulderPoser {
       .multiply(z180Quaternion);
 
     let hmdQuaternion = headBodySync ? hmdRotation : frontQuaternion;
+
+    // Threshold for head 180 deg turn
     if (hmdRotation.y < 0.72 && headBodySync === false) {
       hmdQuaternion = hmdRotation;
     }
