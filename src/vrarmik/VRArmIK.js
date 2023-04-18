@@ -185,29 +185,29 @@ class VRArmIK {
       }
     }
 
-    const bZResValue = 0.01;
-    //Horizontal hand restriction(maximum out).
-    if (
-      this.target.position.z >
-      this.shoulder.shoulderPoser.vrTransforms.head.position.z
-    ) {
-      this.target.position.z =
-        this.shoulder.shoulderPoser.vrTransforms.head.position.z + bZResValue;
-      handPosition = localVector2.copy(this.target.position);
-    }
+    // const bZResValue = this.headQuaternion > 0.72 ? -0.01 : 0.01;
+    // //Horizontal hand restriction(maximum out).
+    // if (
+    //   this.target.position.z >
+    //   this.shoulder.shoulderPoser.vrTransforms.head.position.z
+    // ) {
+    //   this.target.position.z =
+    //     this.shoulder.shoulderPoser.vrTransforms.head.position.z + bZResValue;
+    //   handPosition = localVector2.copy(this.target.position);
+    // }
 
-    //Horozontal hand restriction(minimum in).
-    const fZResValue = 0.015;
-    if (
-      this.target.position.z <
-        this.shoulder.shoulderPoser.vrTransforms.head.position.z &&
-      this.target.position.z >
-        this.shoulder.shoulderPoser.vrTransforms.head.position.z - fZResValue
-    ) {
-      this.target.position.z =
-        this.shoulder.shoulderPoser.vrTransforms.head.position.z - fZResValue;
-      handPosition = localVector2.copy(this.target.position);
-    }
+    // //Horozontal hand restriction(minimum in).
+    // const fZResValue = this.headQuaternion > 0.72 ? -0.015 : 0.015;
+    // if (
+    //   this.target.position.z <
+    //     this.shoulder.shoulderPoser.vrTransforms.head.position.z &&
+    //   this.target.position.z >
+    //     this.shoulder.shoulderPoser.vrTransforms.head.position.z - fZResValue
+    // ) {
+    //   this.target.position.z =
+    //     this.shoulder.shoulderPoser.vrTransforms.head.position.z - fZResValue;
+    //   handPosition = localVector2.copy(this.target.position);
+    // }
 
     // if(this.left){
     // 	// console.log(this.target.position)
@@ -323,12 +323,27 @@ class VRArmIK {
       //ubdy
 
       //tbdy
-      handRotW = fakeHandRRotW < 1.2 ? fakeHandRRotW + 2.2 : fakeHandRRotW;
+      handRotW =
+        fakeHandRRotW < 1.2
+          ? this.headQuaternion.y > 0.72
+            ? fakeHandRRotW
+            : fakeHandRRotW + 2.2
+          : this.headQuaternion.y > 0.72
+          ? fakeHandRRotW + 2.2
+          : fakeHandRRotW;
+      console.log(this.headQuaternion.y);
     } else {
       //ubdy
 
       //tbdy
-      handRotW = fakeHandLRotW < 1.2 ? fakeHandLRotW - 4 : fakeHandLRotW;
+      handRotW =
+        fakeHandLRotW < 1.2
+          ? this.headQuaternion.y > 0.72
+            ? fakeHandLRotW
+            : fakeHandLRotW - 4
+          : this.headQuaternion.y > 0.72
+          ? fakeHandLRotW - 4
+          : fakeHandLRotW;
       //console.log(handRotW)
     }
     // this.arm.lowerArm.position = elbowPosition;
@@ -340,14 +355,16 @@ class VRArmIK {
           localVector5
             .set(lowerArmX, lowerArmY, lowerArmZ)
             .applyQuaternion(
-              localQuaternion3.setFromAxisAngle(
-                new THREE.Vector3(
-                  handRotation.x,
-                  handRotation.y,
-                  handRotation.z
-                ),
-                handRotW
-              )
+              this.headQuaternion < 0.72
+                ? localQuaternion3.setFromAxisAngle(
+                    new THREE.Vector3(
+                      handRotation.x,
+                      handRotation.y,
+                      handRotation.z
+                    ),
+                    handRotW
+                  )
+                : handRotation
             )
         )
       )

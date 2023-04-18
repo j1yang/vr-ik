@@ -599,16 +599,6 @@ class VRArmIK {
       this.target.position.z = this.shoulder.shoulderPoser.vrTransforms.head.position.z + afkZ;
       handPosition = localVector2.copy(this.target.position);
     }
-    const bZResValue = 0.01;
-    if (this.target.position.z > this.shoulder.shoulderPoser.vrTransforms.head.position.z) {
-      this.target.position.z = this.shoulder.shoulderPoser.vrTransforms.head.position.z + bZResValue;
-      handPosition = localVector2.copy(this.target.position);
-    }
-    const fZResValue = 0.015;
-    if (this.target.position.z < this.shoulder.shoulderPoser.vrTransforms.head.position.z && this.target.position.z > this.shoulder.shoulderPoser.vrTransforms.head.position.z - fZResValue) {
-      this.target.position.z = this.shoulder.shoulderPoser.vrTransforms.head.position.z - fZResValue;
-      handPosition = localVector2.copy(this.target.position);
-    }
     const shoulderRotation = Helpers.getWorldQuaternion(this.shoulder.transform, localQuaternion);
     const shoulderRotationInverse = localQuaternion2.copy(shoulderRotation).invert();
     const hypotenuseDistance = this.upperArmLength;
@@ -638,11 +628,12 @@ class VRArmIK {
     let fakeHandLRotW = handRotation.w + Math.PI / 2.81;
     let handRotW = 0;
     if (this.left) {
-      handRotW = fakeHandRRotW < 1.2 ? fakeHandRRotW + 2.2 : fakeHandRRotW;
+      handRotW = fakeHandRRotW < 1.2 ? this.headQuaternion.y > 0.72 ? fakeHandRRotW : fakeHandRRotW + 2.2 : this.headQuaternion.y > 0.72 ? fakeHandRRotW + 2.2 : fakeHandRRotW;
+      console.log(this.headQuaternion.y);
     } else {
-      handRotW = fakeHandLRotW < 1.2 ? fakeHandLRotW - 4 : fakeHandLRotW;
+      handRotW = fakeHandLRotW < 1.2 ? this.headQuaternion.y > 0.72 ? fakeHandLRotW : fakeHandLRotW - 4 : this.headQuaternion.y > 0.72 ? fakeHandLRotW - 4 : fakeHandLRotW;
     }
-    this.arm.lowerArm.quaternion.setFromRotationMatrix(localMatrix.lookAt(zeroVector, localVector6.copy(handPosition).sub(elbowPosition), localVector5.set(lowerArmX, lowerArmY, lowerArmZ).applyQuaternion(localQuaternion3.setFromAxisAngle(new THREE.Vector3(handRotation.x, handRotation.y, handRotation.z), handRotW)))).multiply(this.left ? rightRotation$1 : leftRotation$1).premultiply(Helpers.getWorldQuaternion(this.arm.lowerArm.parent, localQuaternion3).invert());
+    this.arm.lowerArm.quaternion.setFromRotationMatrix(localMatrix.lookAt(zeroVector, localVector6.copy(handPosition).sub(elbowPosition), localVector5.set(lowerArmX, lowerArmY, lowerArmZ).applyQuaternion(this.headQuaternion < 0.72 ? localQuaternion3.setFromAxisAngle(new THREE.Vector3(handRotation.x, handRotation.y, handRotation.z), handRotW) : handRotation))).multiply(this.left ? rightRotation$1 : leftRotation$1).premultiply(Helpers.getWorldQuaternion(this.arm.lowerArm.parent, localQuaternion3).invert());
     Helpers.updateMatrixMatrixWorld(this.arm.lowerArm);
     this.arm.hand.quaternion.copy(this.target.quaternion).multiply(this.left ? bankRightRotation : bankLeftRotation).premultiply(Helpers.getWorldQuaternion(this.arm.hand.parent, localQuaternion3).invert());
     Helpers.updateMatrixMatrixWorld(this.arm.hand);
