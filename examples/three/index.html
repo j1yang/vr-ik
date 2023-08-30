@@ -12,7 +12,7 @@
         }
       }
     </script>
-    <title>Exokit Avatars (three.js)</title>
+    <title>IK Avatars</title>
   </head>
   <body>
     <script type="module" defer>
@@ -55,7 +55,7 @@
       // ground
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       const geometry = new THREE.PlaneGeometry(10, 10);
-      const material = new THREE.MeshBasicMaterial({ color: "green" });
+      const material = new THREE.MeshBasicMaterial({ color: "grey" });
       const ground = new THREE.Mesh(geometry, material);
       ground.rotateX(THREE.MathUtils.degToRad(-90));
       scene.add(ground);
@@ -151,7 +151,7 @@
       let urlIndex = 2;
       const model = await new Promise((res, rej) => {
         new GLTFLoader().load(
-          "https://models.readyplayer.me/63fce45ff78ee8a6d6907ca5.glb?morphTargets=eyesClosed,ARKit,Oculus Visemes",
+          "https://models.readyplayer.me/647e9843866a701f831397d7.glb?morphTargets=eyesClosed,ARKit,Oculus Visemes",
           (gltf) => {
             console.log(gltf.scene.children[0].children);
             const meshes = gltf.scene.children[0].children;
