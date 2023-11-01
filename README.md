@@ -1,30 +1,66 @@
-The only web-based avatar system you need.
+<a name="readme-top"></a>
 
-- Loads GLB, FBX, VRChat, VRoid, .unitypackage humanoid
-- Auto-detects rigs, height, orientation
-- World scale matching
-- HMD + gamepads input
-- Bones orientation output
-- Arms, legs inverse kinematics
-- Walking kinematics
-- Face animation (visemes) with microphone
-- Hair/clothing animation
 
-#npm install
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/j1yang/vr-ik/">
+    <img src="https://github.com/j1yang/vr-ik/blob/main/virk.gif" alt="Logo" width="700" height="400">
+  </a>
 
-#npm run build
+  <h3 align="center">VR Avatar Arm Inverse Kinematic</h3>
 
-#npm start
+  <p align="center">
+    An avatar arm inverse kinematic for ReadyPlayerMe Avatar. 
+  </p>
+</div>
+
+<!-- ABOUT THE PROJECT -->
+
+## About The Project
+
+The project's key features include:
+
+- **Loads GLB**: The project seamlessly loads GLB files, ensuring smooth integration of 3D models.
+
+- **Auto-detects rigs, height, orientation**: The system intelligently detects rigs, adjusts height, and orients the avatar for a natural and realistic representation.
+
+- **Bones orientation output**: The project provides detailed bone orientation output, enabling precise control over avatar movements.
+
+- **Arms inverse kinematics**: Leveraging Inverse Kinematics, the project accurately calculates arm movements, enhancing the realism of the avatars.
+
+- **Face animation (visemes) with microphone**: The project incorporates facial animation (visemes) synchronized with microphone input, adding a layer of interactivity and immersion.
+
+### Built With
+
+* [Three.js](https://threejs.org/)
+* [Javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+* [Vite](https://vitejs.dev/)
+* [React.js](https://reactjs.org/)
+
+
+<!-- GETTING STARTED -->
+
+## Getting Started
+
+### Installation
+
+  ```sh
+  clone project
+  npm install
+  npm vite build
+  ```
+
+<!-- USAGE EXAMPLES -->
+
+
+
 
 ## How it works
 
 ```
-import './three.js';
-import Avatar from 'https://avatars.exokit.org/avatars.js';
 
-const avatar = new Avatar(model, { // model is the gltf object that includes the scene, can use https://github.com/exokitxr/model-loader
-  // all options are optional
-
+const avatar = new Avatar(model, { // model is the gltf object that includes the scene
   // animate fingers
   fingers: true,
 
@@ -63,5 +99,3 @@ function animate() {
 }
 animate();
 ```
-
-## [License](https://github.com/exokitxr/license)
