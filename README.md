@@ -32,11 +32,18 @@ The project's key features include:
 - **Face animation (visemes) with microphone**: The project incorporates facial animation (visemes) synchronized with microphone input, adding a layer of interactivity and immersion.
 
 ### Built With
+* [![Three.js][Threedotjs]][Threedotjs-url]
+* [![Javascript][Javascript]][Javascript-url]
+* [![Vite][Vite]][Vite-url]
 
-* [Three.js](https://threejs.org/)
-* [Javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-* [Vite](https://vitejs.dev/)
-* [React.js](https://reactjs.org/)
+
+  
+[Javascript]: https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black
+[Javascript-url]: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+[Vite]: https://img.shields.io/badge/vite-646CFF?style=for-the-badge&logo=vite&logoColor=black
+[Vite-url]: https://vitejs.dev/
+[Threedotjs]: https://img.shields.io/badge/three.js-ffffff?style=for-the-badge&logo=three.js&logoColor=black
+[Threedotjs-url]: https://threejs.org/
 
 
 <!-- GETTING STARTED -->
